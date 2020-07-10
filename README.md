@@ -24,3 +24,22 @@ Scoverage is a coverage tool for scala that offers statement and branch coverage
 1. Run the command `mvn scoverage:report`
 1. You can see the generated site folder under the target folder.
 1. Click on the site folder and open index.html with browser.
+
+### What is Scapegoat and how to configure and generate report?
+
+Scapegoat is a Scala static code analyzer that flag suspicious language usage in code.
+1. Make sure to add scapegoat plugin as a dependency and then configure scala-maven-plugin by adding compilerPlugin.
+1. `mvn clean install` will generate scapegoat folder inside the target folder.
+1. Click on the scapegoat folder and open scapegoat.html with browser.
+
+### What is spotbugs and how to generate report?
+
+SpotBugs is a program which uses static analysis to look for bugs in code and it is the spiritual successor of FindBugs.
+1. Add the plugin in the pom.xml and add spotbugs-security-include.xml and spotbugs-security-exclude.xml files.
+1. You can run the scan using command `mvn spotbugs:spotbugs` and run the gui using mvn spotbugs:gui.
+1. An XML report is generated at target/spotbugsXml.xml.
+
+### What is pmd-cpd and how to generate report?
+
+Copy/Paste Detector (CPD) is used to find duplicate code. cpd.xml is generated under target/pmd folder.
+
