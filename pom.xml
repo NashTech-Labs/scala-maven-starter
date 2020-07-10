@@ -22,7 +22,7 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
-      <version>2.12.6</version>
+      <version>2.12.8</version>
     </dependency>
 
     <dependency>
@@ -30,6 +30,12 @@
       <artifactId>scalatest_2.12</artifactId>
       <version>3.1.0</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sksamuel.scapegoat</groupId>
+      <artifactId>scalac-scapegoat-plugin_2.12.8</artifactId>
+      <version>1.4.2</version>
     </dependency>
   </dependencies>
 
@@ -41,11 +47,31 @@
         <!-- see http://davidb.github.com/scala-maven-plugin -->
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.2.2</version>
         <executions>
           <execution>
+            <id>1</id>
             <goals>
               <goal>compile</goal>
+            </goals>
+            <configuration>
+              <args>
+                <arg>-dependencyfile</arg>
+                <arg>${project.build.directory}/.scala_dependencies</arg>
+                <arg>-P:scapegoat:dataDir:./target/scapegoat</arg>
+              </args>
+              <compilerPlugins>
+                <compilerPlugin>
+                  <groupId>com.sksamuel.scapegoat</groupId>
+                  <artifactId>scalac-scapegoat-plugin_2.12.8</artifactId>
+                  <version>1.4.2</version>
+                </compilerPlugin>
+              </compilerPlugins>
+            </configuration>
+          </execution>
+          <execution>
+            <id>2</id>
+            <goals>
               <goal>testCompile</goal>
             </goals>
             <configuration>
@@ -125,6 +151,43 @@
               <goal>check</goal> <!-- or integration-check -->
             </goals>
             <phase>prepare-package</phase> <!-- or any other phase -->
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.12.0</version>
+        <configuration>
+          <linkXRef>false</linkXRef>
+          <failOnViolation>true</failOnViolation>
+          <printFailingErrors>true</printFailingErrors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>execute_pmd</id>
+            <phase>verify</phase>
+            <configuration>
+              <sourceEncoding>utf-8</sourceEncoding>
+              <minimumTokens>100</minimumTokens>
+              <targetJdk>1.8</targetJdk>
+              <outputDirectory>${project.build.directory}/pmd</outputDirectory>
+              <targetDirectory>${project.build.directory}/pmd</targetDirectory>
+              <excludes>
+                <exclude>**/*Bean.java</exclude>
+                <exclude>**/generated/*.java</exclude>
+              </excludes>
+              <excludeRoots>
+                <excludeRoot>target/generated-sources/stubs</excludeRoot>
+              </excludeRoots>
+              <failurePriority>3</failurePriority>
+            </configuration>
+            <goals>
+              <goal>pmd</goal>
+              <goal>cpd</goal>
+              <goal>check</goal>
+              <goal>cpd-check</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
